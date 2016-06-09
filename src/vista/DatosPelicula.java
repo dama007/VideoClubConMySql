@@ -5,6 +5,7 @@
  */
 package vista;
 
+import dao.PeliculaJDBC;
 import javax.swing.JOptionPane;
 import modelo.Pelicula;
 
@@ -23,6 +24,9 @@ public class DatosPelicula extends javax.swing.JDialog {
     public void setPelicula(Pelicula pelicula) {
         this.pelicula = pelicula;
     }
+    
+    
+    private PeliculaJDBC peliculaJDBC;
 
 
     /**
@@ -30,6 +34,7 @@ public class DatosPelicula extends javax.swing.JDialog {
      */
     public DatosPelicula(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        peliculaJDBC = new PeliculaJDBC();
         pelicula = new Pelicula();
         initComponents();
     }
@@ -191,6 +196,12 @@ public class DatosPelicula extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
       if (comprobarCampos()) {
           
+          if (peliculaJDBC.insertarPelicula(pelicula)) {
+              JOptionPane.showMessageDialog(this, "Película dada de alta");
+              dispose();
+          } else {
+              JOptionPane.showMessageDialog(this, "No se ha podido insertar la pelicula");
+          }     
       }  
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -202,6 +213,9 @@ public class DatosPelicula extends javax.swing.JDialog {
        if (jTextField1.getText().length() > 8) {
            JOptionPane.showMessageDialog(this, "El código debe tener 8 carácteres");
            return false;
+       }
+       if (peliculaJDBC.existePelicula(jTextField1.getText())) {
+           JOptionPane.showMessageDialog(this, "Ya existe una pelicula con este código.");
        }
        if (jTextField2.getText().isEmpty() || jTextField2.getText().length() > 100) {
            JOptionPane.showMessageDialog(this, "El título no puede estar en blanco ni tener más de 100 caracteres.");
